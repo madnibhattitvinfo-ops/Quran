@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: userId (uid)
+    // Fields:
+    //   - uid: string (required)
+    //   - displayName: string
+    //   - email: string
+    //   - lastRead: map (surahNumber, ayahNumber, timestamp)
+    //   - bookmarks: list of maps
+    //   - tasbeehCounts: map
+    //
+    // Collection: surahs
+    // Document ID: surahNumber
+    // Fields:
+    //   - number: number
+    //   - name: string
+    //   - englishName: string
+    //   - numberOfAyahs: number
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid']) &&
+             data.uid is string &&
+             data.uid.size() > 0 &&
+             (!('email' in data) || (data.email is string && data.email.size() < 255));
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /surahs/{surahId} {
+      allow read: if true; // Publicly readable
+      allow write: if false; // Only admin (manual)
+    }
+  }
+}

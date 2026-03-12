@@ -1,0 +1,5 @@
+{
+  "name": "Al-Quran Al-Kareem",
+  "description": "A comprehensive Quran application with reading, audio, translations, prayer times, and more.",
+  "requestFramePermissions": ["geolocation"]
+}

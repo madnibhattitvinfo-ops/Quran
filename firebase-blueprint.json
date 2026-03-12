@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user preferences and activity.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "lastRead": {
+          "type": "object",
+          "properties": {
+            "surahNumber": { "type": "number" },
+            "ayahNumber": { "type": "number" },
+            "timestamp": { "type": "string", "format": "date-time" }
+          }
+        },
+        "bookmarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "surahNumber": { "type": "number" },
+              "ayahNumber": { "type": "number" }
+            }
+          }
+        },
+        "tasbeehCounts": {
+          "type": "object",
+          "properties": {
+            "subhanAllah": { "type": "number" },
+            "alhamdulillah": { "type": "number" },
+            "allahuAkbar": { "type": "number" }
+          }
+        }
+      },
+      "required": ["uid"]
+    },
+    "Surah": {
+      "title": "Surah",
+      "description": "Metadata for a Surah.",
+      "type": "object",
+      "properties": {
+        "number": { "type": "number" },
+        "name": { "type": "string" },
+        "englishName": { "type": "string" },
+        "englishNameTranslation": { "type": "string" },
+        "numberOfAyahs": { "type": "number" },
+        "revelationType": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents."
+    },
+    "/surahs": {
+      "schema": "Surah",
+      "description": "List of surahs."
+    }
+  }
+}
